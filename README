@@ -1,0 +1,9 @@
+Commands 
+
+To build -
+mvn package
+
+To clean
+mvn clean
+
+
