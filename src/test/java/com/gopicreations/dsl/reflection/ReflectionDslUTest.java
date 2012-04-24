@@ -23,6 +23,6 @@ public class ReflectionDslUTest {
     Object result = create("java.lang.StringBuffer").withValue("Hakuna").call("append", " Matata").call("toString").get();
     
     assertEquals(String.class, result.getClass());
-    assertEquals(result, "Hakuna Matata");
+    assertEquals("Hakuna Matata", result);
   }
 }
