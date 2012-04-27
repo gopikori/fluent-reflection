@@ -1,6 +1,8 @@
 package com.gopicreations.dsl.reflection;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReflectionDSL {
 
@@ -14,18 +16,13 @@ public class ReflectionDSL {
     return new ReflectionDSL(Class.forName(className));
   }
 
-  public ReflectionDSL withValue(String value) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-    object = ((Class)this.object).getConstructor(String.class).newInstance(value);
+  public ReflectionDSL withValue(Object...parameters) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    object = ((Class)this.object).getConstructor(getParameterTypes(parameters)).newInstance(parameters);
     return this;
   }
 
-  public ReflectionDSL call(String method) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-    this.object = object.getClass().getMethod(method, null).invoke(object); 
-    return this;
-  }
-  
-  public ReflectionDSL call(String method, Object parameter) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-    this.object = object.getClass().getMethod(method, parameter.getClass()).invoke(object, parameter); 
+  public ReflectionDSL call(String method, Object...parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    this.object = object.getClass().getMethod(method, getParameterTypes(parameters)).invoke(object, parameters); 
     return this;
   }
 
@@ -33,4 +30,12 @@ public class ReflectionDSL {
     return object;
   }
   
+  private Class<?>[] getParameterTypes(Object[] parameters) {
+    Class<?>[] paramTypes = new Class<?>[parameters.length];
+    for(int i = 0; i< parameters.length; i++) {
+      paramTypes[i] = parameters[i].getClass();
+    }
+    return paramTypes;
+  }
+
 }
